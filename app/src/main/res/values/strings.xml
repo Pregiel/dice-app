@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Dice-app</string>
+    <string name="login_invalid">Invalid username and/or password.</string>
+    <string name="all_username">Username</string>
+    <string name="all_password">Password</string>
+    <string name="login_login">Log In</string>
+    <string name="login_create">Create Account</string>
+    <string name="login_welcome">Welcome %s!</string>
+    <string name="register_submit">submit</string>
+    <string name="register_header">Create new account</string>
+    <string name="login_header">Welcome</string>
+    <string name="all_confirmPassword">Confirm password</string>
+    <string name="registration_errors_username_size">Username must contain between 6 and 32 characters.</string>
+    <string name="registration_errors_username_duplicate">Someone already has that username.</string>
+    <string name="registration_errors_password_size">Password must contain between 8 and 32 characters.</string>
+    <string name="registration_errors_confirmPassword_diff">Password and Confirm password does not match.</string>
+</resources>

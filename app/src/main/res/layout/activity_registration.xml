@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentTop="true"
+    tools:context="pl.pregiel.dice_app.activities.RegistrationActivity">
+
+
+    <LinearLayout
+        android:id="@+id/relativeLayout_registration_form"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/textView_registration_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_header"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            android:textColor="@color/colorPrimaryText" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_registration_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editText_registration_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/all_border_2dp"
+                android:ems="10"
+                android:hint="@string/all_username"
+                android:inputType="textPersonName"
+                android:padding="8dp"
+                android:textColor="@color/colorSecondaryText" />
+
+            <TextView
+                android:id="@+id/textView_registration_usernameError_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/registration_errors_username_size"
+                android:textColor="@color/colorAlert"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textView_registration_usernameError_duplicate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/registration_errors_username_duplicate"
+                android:textColor="@color/colorAlert"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_registration_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editText_registration_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/all_border_2dp"
+                android:ems="10"
+                android:hint="@string/all_password"
+                android:inputType="textPassword"
+                android:padding="8dp"
+                android:textColor="@color/colorSecondaryText" />
+
+            <TextView
+                android:id="@+id/textView_registration_passwordError_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/registration_errors_password_size"
+                android:textColor="@color/colorAlert"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_registration_confirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editText_registration_confirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/all_border_2dp"
+                android:ems="10"
+                android:hint="@string/all_confirmPassword"
+                android:inputType="textPassword"
+                android:padding="8dp"
+                android:textColor="@color/colorSecondaryText"/>
+
+            <TextView
+                android:id="@+id/textView_registration_confirmPasswordError_diff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/registration_errors_confirmPassword_diff"
+                android:textColor="@color/colorAlert"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_registration_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:onClick="submit"
+            android:text="@string/register_submit"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+</RelativeLayout>
