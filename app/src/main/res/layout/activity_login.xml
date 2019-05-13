@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentBottom="true"
     android:layout_alignParentTop="true"
+    android:focusableInTouchMode="true"
     tools:context="pl.pregiel.dice_app.activities.LoginActivity">
 
 
@@ -48,6 +49,15 @@
             android:inputType="textPassword"
             android:padding="8dp"
             android:textColor="@color/colorSecondaryText" />
+
+        <TextView
+            android:id="@+id/textView_login_error_invalid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_errors_invalid"
+            android:textColor="@color/colorAlert"
+            android:layout_marginTop="3dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

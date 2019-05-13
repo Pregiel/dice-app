@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +18,7 @@ import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -28,7 +28,7 @@ import java.util.List;
 
 import pl.pregiel.dice_app.R;
 import pl.pregiel.dice_app.TextValidator;
-import pl.pregiel.dice_app.User;
+import pl.pregiel.dice_app.pojos.User;
 import pl.pregiel.dice_app.UserInfo;
 import pl.pregiel.dice_app.Utils;
 import pl.pregiel.dice_app.WebController;
@@ -63,6 +63,7 @@ public class RegistrationActivity extends AppCompatActivity {
             public void textChanged() {
                 errorUsernameSize.setVisibility(View.GONE);
                 errorUsernameDuplicate.setVisibility(View.GONE);
+                Utils.setEditTextBorderColor(username, R.color.colorBorder);
 
             }
         });
@@ -80,9 +81,11 @@ public class RegistrationActivity extends AppCompatActivity {
             public void textChanged() {
                 errorPasswordSize.setVisibility(View.GONE);
                 errorConfirmPasswordDiff.setVisibility(View.GONE);
+                Utils.setEditTextBorderColor(password, R.color.colorBorder);
 
             }
         });
+
         confirmPassword = findViewById(R.id.editText_registration_confirmPassword);
         confirmPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -96,6 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
         confirmPassword.addTextChangedListener(new TextValidator() {
             public void textChanged() {
                 errorConfirmPasswordDiff.setVisibility(View.GONE);
+                Utils.setEditTextBorderColor(confirmPassword, R.color.colorBorder);
             }
         });
     }
@@ -125,34 +129,29 @@ public class RegistrationActivity extends AppCompatActivity {
                     password.getText().toString(),
                     confirmPassword.getText().toString());
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
             RestTemplate restTemplate = new RestTemplate();
 
-            HttpEntity<User> entity = new HttpEntity<>(user, headers);
+            HttpEntity<User> entity = new HttpEntity<>(user,
+                    WebController.getHttpEntityWithoutAuth().getHeaders());
+
             ResponseEntity<String> response = restTemplate.exchange(
-                    WebController.REGISTRATION_URL, HttpMethod.POST, entity, String.class);
+                    WebController.USER_LIST_URL, HttpMethod.POST, entity, String.class);
 
             try {
                 JSONObject jsonObject = new JSONObject(response.getBody());
-                if (jsonObject.get("registration").equals("success")) {
+                if (response.getStatusCode() == HttpStatus.OK) {
                     UserInfo.getInstance().setUsername(username.getText().toString());
 
-                    WebController.setupRequest(username.getText().toString(), password.getText().toString());
+                    WebController.setupHttpEntity(jsonObject.getString("token"));
 
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, String.format(activity.getString(R.string.login_welcome),
-                                    UserInfo.getInstance().getUsername()), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    activity.runOnUiThread(() -> Toast.makeText(activity,
+                            String.format(activity.getString(R.string.login_welcome),
+                            UserInfo.getInstance().getUsername()), Toast.LENGTH_LONG).show());
 
                     Intent view = new Intent(activity, RoomListActivity.class);
                     activity.startActivity(view);
                     activity.finish();
-                } else if (jsonObject.get("registration").equals("failure")) {
+                } else {
                     JSONArray errorJSONArray = (JSONArray) jsonObject.get("errors");
 
                     handleErrorList(Utils.listFromJSONString(
@@ -165,7 +164,12 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
         private void handleErrorList(final List<String> errorList) {
-            Activity activity = reference.get();
+            final Activity activity = reference.get();
+
+            final EditText username = activity.findViewById(R.id.editText_registration_username);
+            final EditText password = activity.findViewById(R.id.editText_registration_password);
+            final EditText confirmPassword = activity.findViewById(R.id.editText_registration_confirmPassword);
+
 
             final TextView errorUsernameSize = activity.findViewById(
                     R.id.textView_registration_usernameError_size);
@@ -179,30 +183,31 @@ public class RegistrationActivity extends AppCompatActivity {
             final TextView errorConfirmPasswordDiff = activity.findViewById(
                     R.id.textView_registration_confirmPasswordError_diff);
 
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    for (String s : errorList) {
-                        switch (s) {
-                            case "username.notFound":
-                            case "username.size":
-                                errorUsernameSize.setVisibility(View.VISIBLE);
-                                break;
+            activity.runOnUiThread(() -> {
+                for (String s : errorList) {
+                    switch (s) {
+                        case "username.notFound":
+                        case "username.size":
+                            errorUsernameSize.setVisibility(View.VISIBLE);
+                            Utils.setEditTextBorderColor(username, R.color.colorAlert);
+                            break;
 
-                            case "username.duplicate":
-                                errorUsernameDuplicate.setVisibility(View.VISIBLE);
-                                break;
+                        case "username.duplicate":
+                            errorUsernameDuplicate.setVisibility(View.VISIBLE);
+                            Utils.setEditTextBorderColor(username, R.color.colorAlert);
+                            break;
 
-                            case "password.notFound":
-                            case "password.size":
-                                errorPasswordSize.setVisibility(View.VISIBLE);
-                                break;
+                        case "password.notFound":
+                        case "password.size":
+                            errorPasswordSize.setVisibility(View.VISIBLE);
+                            Utils.setEditTextBorderColor(password, R.color.colorAlert);
+                            break;
 
-                            case "confirmPassword.notFound":
-                            case "confirmPassword.diff":
-                                errorConfirmPasswordDiff.setVisibility(View.VISIBLE);
-                                break;
-                        }
+                        case "confirmPassword.notFound":
+                        case "confirmPassword.diff":
+                            errorConfirmPasswordDiff.setVisibility(View.VISIBLE);
+                            Utils.setEditTextBorderColor(confirmPassword, R.color.colorAlert);
+                            break;
                     }
                 }
             });
@@ -215,6 +220,7 @@ public class RegistrationActivity extends AppCompatActivity {
         int confirmPasswordError = validateConfirmPassword(confirmPassword.getText().toString(),
                 password.getText().toString());
 
+
         return usernameError == 0 && passwordError == 0 && confirmPasswordError == 0;
     }
 
@@ -224,9 +230,11 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private int validateUsername(String username) {
         if (username.length() < 6 || username.length() > 32) {
+            Utils.setEditTextBorderColor(this.username, R.color.colorAlert);
             errorUsernameSize.setVisibility(View.VISIBLE);
             return 1;
         }
+        Utils.setEditTextBorderColor(this.username, R.color.colorBorder);
         return 0;
     }
 
@@ -235,10 +243,12 @@ public class RegistrationActivity extends AppCompatActivity {
      * 1 - too short or too long (8 - 32 characters)
      */
     private int validatePassword(String password) {
+        Utils.setEditTextBorderColor(this.password, R.color.colorAlert);
         if (password.length() < 8 || password.length() > 32) {
             errorPasswordSize.setVisibility(View.VISIBLE);
             return 1;
         }
+        Utils.setEditTextBorderColor(this.password, R.color.colorBorder);
         return 0;
     }
 
@@ -247,10 +257,12 @@ public class RegistrationActivity extends AppCompatActivity {
      * 1 - password and confirm password is different
      */
     private int validateConfirmPassword(String confirmPassword, String password) {
+        Utils.setEditTextBorderColor(this.confirmPassword, R.color.colorAlert);
         if (!confirmPassword.equals(password)) {
             errorConfirmPasswordDiff.setVisibility(View.VISIBLE);
             return 1;
         }
+        Utils.setEditTextBorderColor(this.confirmPassword, R.color.colorBorder);
         return 0;
     }
 

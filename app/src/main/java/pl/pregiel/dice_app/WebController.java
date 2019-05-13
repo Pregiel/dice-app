@@ -1,29 +1,40 @@
 package pl.pregiel.dice_app;
 
 
-import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.MediaType;
 
 public class WebController {
-    public static final String BASE_URL = "http://192.168.1.20:8080/",
-            LOGIN_URL = BASE_URL + "%s/roomlist/",
-            REGISTRATION_URL = BASE_URL + "registration/",
-            ROOM_URL = BASE_URL + "/room/%s/";
+    public static final String BASE_URL = "http://192.168.1.20:45455/api/",
+            USER_LIST_URL = BASE_URL + "users/",
+            AUTHENTICATE_URL = USER_LIST_URL + "authenticate/",
+            ROOM_LIST_URL = BASE_URL + "rooms/",
+            ROOM_URL = ROOM_LIST_URL + "%s/";
 
-    private static HttpEntity<String> request;
+    private static HttpEntity<String> httpEntity;
 
-    public static void setupRequest(String username, String password) {
+    public static void setupHttpEntity(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
 
-        httpHeaders.setAuthorization(new HttpBasicAuthentication(username, password));
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.set("Authorization", "Bearer " + accessToken);
 
-        request = new HttpEntity<>(httpHeaders);
+        httpEntity = new HttpEntity<>(httpHeaders);
     }
 
-    public static HttpEntity<String> getRequest() {
-        return request;
+    public static HttpEntity<String> getHttpEntityWithoutAuth() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+
+        return httpEntity;
+    }
+
+    public static HttpEntity<String> getHttpEntity() {
+        return httpEntity;
     }
 
 }

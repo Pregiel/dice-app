@@ -9,7 +9,7 @@ public class UserInfo {
 
     private String username;
 
-    private List<Room> roomList = new ArrayList<>();
+//    private List<RoomDto> roomList = new ArrayList<>();
 
     public static synchronized UserInfo getInstance() {
         if (userInfo == null) {
@@ -26,11 +26,11 @@ public class UserInfo {
         this.username = username;
     }
 
-    public List<Room> getRoomList() {
-        return roomList;
-    }
-
-    public void setRoomList(List<Room> roomList) {
-        this.roomList = roomList;
-    }
+//    public List<RoomDto> getRoomList() {
+//        return roomList;
+//    }
+//
+//    public void setRoomList(List<RoomDto> roomList) {
+//        this.roomList = roomList;
+//    }
 }

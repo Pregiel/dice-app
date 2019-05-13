@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Dice-app</string>
-    <string name="login_invalid">Invalid username and/or password.</string>
+    <string name="login_errors_invalid">Invalid username and/or password.</string>
     <string name="all_username">Username</string>
     <string name="all_password">Password</string>
     <string name="login_login">Log In</string>
@@ -14,4 +14,6 @@
     <string name="registration_errors_username_duplicate">Someone already has that username.</string>
     <string name="registration_errors_password_size">Password must contain between 8 and 32 characters.</string>
     <string name="registration_errors_confirmPassword_diff">Password and Confirm password does not match.</string>
+    <string name="roomList_element_owner">Owner: %s</string>
+    <string name="roomList_element_users">%s users</string>
 </resources>

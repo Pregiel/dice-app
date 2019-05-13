@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentBottom="true"
     android:layout_alignParentTop="true"
+    android:focusableInTouchMode="true"
     tools:context="pl.pregiel.dice_app.activities.RegistrationActivity">
 
 
@@ -22,10 +23,11 @@
             android:id="@+id/textView_registration_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:text="@string/register_header"
             android:textAlignment="center"
-            android:textSize="36sp"
-            android:textColor="@color/colorPrimaryText" />
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="36sp" />
 
         <LinearLayout
             android:id="@+id/linearLayout_registration_username"
@@ -51,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/registration_errors_username_size"
                 android:textColor="@color/colorAlert"
+                android:layout_marginTop="3dp"
                 android:visibility="gone" />
 
             <TextView
@@ -59,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/registration_errors_username_duplicate"
                 android:textColor="@color/colorAlert"
+                android:layout_marginTop="3dp"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -86,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/registration_errors_password_size"
                 android:textColor="@color/colorAlert"
+                android:layout_marginTop="3dp"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -105,7 +110,7 @@
                 android:hint="@string/all_confirmPassword"
                 android:inputType="textPassword"
                 android:padding="8dp"
-                android:textColor="@color/colorSecondaryText"/>
+                android:textColor="@color/colorSecondaryText" />
 
             <TextView
                 android:id="@+id/textView_registration_confirmPasswordError_diff"
@@ -113,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/registration_errors_confirmPassword_diff"
                 android:textColor="@color/colorAlert"
+                android:layout_marginTop="3dp"
                 android:visibility="gone" />
         </LinearLayout>
 
