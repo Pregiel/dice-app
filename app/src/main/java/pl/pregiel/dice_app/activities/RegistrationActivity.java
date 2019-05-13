@@ -21,6 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.ref.WeakReference;
@@ -134,31 +135,48 @@ public class RegistrationActivity extends AppCompatActivity {
             HttpEntity<User> entity = new HttpEntity<>(user,
                     WebController.getHttpEntityWithoutAuth().getHeaders());
 
-            ResponseEntity<String> response = restTemplate.exchange(
-                    WebController.USER_LIST_URL, HttpMethod.POST, entity, String.class);
-
             try {
+                ResponseEntity<String> response = restTemplate.exchange(
+                        WebController.USER_LIST_URL, HttpMethod.POST, entity, String.class);
+
                 JSONObject jsonObject = new JSONObject(response.getBody());
-                if (response.getStatusCode() == HttpStatus.OK) {
-                    UserInfo.getInstance().setUsername(username.getText().toString());
 
-                    WebController.setupHttpEntity(jsonObject.getString("token"));
+                UserInfo.getInstance().setUsername(username.getText().toString());
 
-                    activity.runOnUiThread(() -> Toast.makeText(activity,
-                            String.format(activity.getString(R.string.login_welcome),
-                            UserInfo.getInstance().getUsername()), Toast.LENGTH_LONG).show());
+                WebController.setupHttpEntity(jsonObject.getString("token"));
 
-                    Intent view = new Intent(activity, RoomListActivity.class);
-                    activity.startActivity(view);
-                    activity.finish();
+                activity.runOnUiThread(() -> Toast.makeText(activity,
+                        String.format(activity.getString(R.string.login_welcome),
+                                UserInfo.getInstance().getUsername()), Toast.LENGTH_LONG).show());
+
+                Intent view = new Intent(activity, RoomListActivity.class);
+                activity.startActivity(view);
+                activity.finish();
+
+            } catch (HttpStatusCodeException e) {
+                if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(e.getResponseBodyAsString());
+                        JSONArray errorJSONArray = (JSONArray) jsonObject.get("errors");
+
+                        handleErrorList(Utils.listFromJSONString(
+                                errorJSONArray.toString(), ",", true));
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                        activity.runOnUiThread(() -> {
+                            Toast.makeText(activity, R.string.login_errors_unknown, Toast.LENGTH_LONG).show();
+                        });
+                    }
                 } else {
-                    JSONArray errorJSONArray = (JSONArray) jsonObject.get("errors");
-
-                    handleErrorList(Utils.listFromJSONString(
-                            errorJSONArray.toString(), ",", true));
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, R.string.login_errors_unknown, Toast.LENGTH_LONG).show();
+                    });
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, R.string.login_errors_unknown, Toast.LENGTH_LONG).show();
+                });
             }
             return null;
         }
@@ -244,7 +262,7 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private int validatePassword(String password) {
         Utils.setEditTextBorderColor(this.password, R.color.colorAlert);
-        if (password.length() < 8 || password.length() > 32) {
+        if (password.length() < 6 || password.length() > 32) {
             errorPasswordSize.setVisibility(View.VISIBLE);
             return 1;
         }

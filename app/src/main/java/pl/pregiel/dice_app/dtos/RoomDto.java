@@ -6,6 +6,7 @@ import java.util.List;
 public class RoomDto {
     private int id;
     private String title;
+    private String password;
     private UserDto owner;
     private String clientAmount;
 
@@ -23,6 +24,14 @@ public class RoomDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public UserDto getOwner() {

@@ -1,25 +1,35 @@
 package pl.pregiel.dice_app;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
+import pl.pregiel.dice_app.dialogs.PasswordDialogFragment;
 import pl.pregiel.dice_app.dtos.RoomDto;
+import pl.pregiel.dice_app.pojos.User;
 
 public class RoomListAdapter extends ArrayAdapter<RoomDto> {
     private List<RoomDto> roomDtoList;
@@ -55,38 +65,16 @@ public class RoomListAdapter extends ArrayAdapter<RoomDto> {
         usersText.setText(getContext().getString(R.string.roomList_element_users,
                 room.getClientAmount()));
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new GetIntoRoomTask(room).execute();
-            }
+        convertView.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putInt("id", room.getId());
+
+            PasswordDialogFragment passwordDialog = new PasswordDialogFragment();
+            passwordDialog.setArguments(args);
+            passwordDialog.show(((Activity) getContext()).getFragmentManager(), "PasswordDialogFragment");
         });
 
         return convertView;
     }
 
-    private static class GetIntoRoomTask extends AsyncTask<Void, Void, Void> {
-        private RoomDto room;
-
-        public GetIntoRoomTask(RoomDto room) {
-            this.room = room;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            RestTemplate restTemplate = new RestTemplate();
-            System.out.println(WebController.getHttpEntity().toString());
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    String.format(WebController.ROOM_URL, room.getId()), HttpMethod.GET,
-                    WebController.getHttpEntity(), String.class);
-
-            if (response.getStatusCode() == HttpStatus.OK) {
-                String body = response.getBody();
-                System.out.println(body);
-            }
-
-            return null;
-        }
-    }
 }

@@ -37,4 +37,12 @@ public class WebController {
         return httpEntity;
     }
 
+    public static boolean checkResponseBody(String body, HttpResultMessage... messages) {
+        for (HttpResultMessage message : messages) {
+            if (!body.contains(message.toString())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

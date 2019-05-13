@@ -42,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
 
         username = findViewById(R.id.editText_login_username);
         password = findViewById(R.id.editText_login_password);
+        username.setText("tom123");
+        password.setText("123123");
 
         TextValidator textValidator = new TextValidator() {
             @Override
@@ -117,25 +119,31 @@ public class LoginActivity extends AppCompatActivity {
                     activity.startActivity(view);
                     activity.finish();
                 } else {
+
+                }
+            } catch (HttpStatusCodeException e) {
+                activity.runOnUiThread(() -> {
+                    username.setEnabled(true);
+                    password.setEnabled(true);
+                });
+
+                if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                     activity.runOnUiThread(() -> {
-                        username.setEnabled(true);
-                        password.setEnabled(true);
+                        Toast.makeText(activity, R.string.login_errors_invalid, Toast.LENGTH_LONG).show();
+
+                        ((GradientDrawable) username.getBackground()).setStroke(3,
+                                ContextCompat.getColor(activity, R.color.colorAlert));
+
+                        ((GradientDrawable) password.getBackground()).setStroke(3,
+                                ContextCompat.getColor(activity, R.color.colorAlert));
+
+                        TextView error = activity.findViewById(R.id.textView_login_error_invalid);
+                        error.setVisibility(View.VISIBLE);
                     });
-
-                    if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                        activity.runOnUiThread(() -> {
-                            Toast.makeText(activity, R.string.login_errors_invalid, Toast.LENGTH_LONG).show();
-
-                            ((GradientDrawable) username.getBackground()).setStroke(3,
-                                    ContextCompat.getColor(activity, R.color.colorAlert));
-
-                            ((GradientDrawable) password.getBackground()).setStroke(3,
-                                    ContextCompat.getColor(activity, R.color.colorAlert));
-
-                            TextView error = activity.findViewById(R.id.textView_login_error_invalid);
-                            error.setVisibility(View.VISIBLE);
-                        });
-                    }
+                } else {
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, R.string.login_errors_unknown, Toast.LENGTH_LONG).show();
+                    });
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
