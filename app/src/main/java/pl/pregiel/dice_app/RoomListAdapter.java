@@ -2,10 +2,7 @@ package pl.pregiel.dice_app;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,36 +10,48 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.pregiel.dice_app.dialogs.PasswordDialogFragment;
 import pl.pregiel.dice_app.dtos.RoomDto;
-import pl.pregiel.dice_app.pojos.User;
 
-public class RoomListAdapter extends ArrayAdapter<RoomDto> {
-    private List<RoomDto> roomDtoList;
+public class RoomListAdapter extends ArrayAdapter<RoomDto> implements Filterable {
+    private List<RoomDto> roomList;
+    private List<RoomDto> roomListFiltered;
+
+    private RoomFilter roomFilter;
 
     public RoomListAdapter(@NonNull Context context, @NonNull List<RoomDto> objects) {
         super(context, 0, objects);
-        roomDtoList = objects;
+        roomList = objects;
+        roomListFiltered = objects;
+    }
+
+    @Override
+    public int getCount() {
+        return roomListFiltered.size();
+    }
+
+    @Nullable
+    @Override
+    public RoomDto getItem(int position) {
+        return roomListFiltered.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        final RoomDto room = roomDtoList.get(position);
+        final RoomDto room = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listelement_roomlist, parent, false);
         }
@@ -77,4 +86,41 @@ public class RoomListAdapter extends ArrayAdapter<RoomDto> {
         return convertView;
     }
 
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        if (roomFilter == null)
+            roomFilter = new RoomFilter();
+        return roomFilter;
+    }
+
+    private class RoomFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+
+            if (constraint != null && constraint.length() > 0) {
+                List<RoomDto> filterList = new ArrayList<>();
+                for (RoomDto room : roomList) {
+                    if (room.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())
+                            || String.valueOf(room.getId()).contains(constraint.toString())) {
+                        filterList.add(room);
+                    }
+                }
+                results.count = filterList.size();
+                results.values = filterList;
+            } else {
+                results.count = roomList.size();
+                results.values = roomList;
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            roomListFiltered = (List<RoomDto>) results.values;
+            notifyDataSetChanged();
+        }
+    }
 }

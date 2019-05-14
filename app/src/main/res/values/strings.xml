@@ -18,6 +18,9 @@
     <string name="registration_errors_unknown">An unknown error occurred.</string>
     <string name="roomList_element_owner">Owner: %s</string>
     <string name="roomList_element_users">%s users</string>
+    <string name="roomList_toolbar_refresh">Refresh</string>
+    <string name="roomList_toolbar_search">Search</string>
+    <string name="roomList_info_refreshed">Refreshed!</string>
     <string name="room_errors_invalidPassword">Invalid password.</string>
     <string name="room_errors_notFound">Room not found.</string>
     <string name="room_errors_unknown">An unknown error occurred.</string>
