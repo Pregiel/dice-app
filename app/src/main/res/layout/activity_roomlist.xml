@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipelayout_roomlist_refresh"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="pl.pregiel.dice_app.activities.RoomListActivity">
 
-    <ListView
-        android:id="@+id/listview_roomlist_list"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_roomlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Room list"
+        app:titleTextColor="@color/colorToolbarTitle" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipelayout_roomlist_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:scrollbars="vertical" />
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_below="@+id/toolbar_roomlist">
+
+        <ListView
+            android:id="@+id/listview_roomlist_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" >
+
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</RelativeLayout>

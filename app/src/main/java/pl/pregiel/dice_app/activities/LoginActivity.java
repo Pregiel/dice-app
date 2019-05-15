@@ -15,20 +15,19 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.ref.WeakReference;
 
 import pl.pregiel.dice_app.R;
-import pl.pregiel.dice_app.TextValidator;
+import pl.pregiel.dice_app.utils.TextValidator;
 import pl.pregiel.dice_app.UserInfo;
-import pl.pregiel.dice_app.WebController;
+import pl.pregiel.dice_app.web.WebController;
 import pl.pregiel.dice_app.pojos.User;
 
 public class LoginActivity extends AppCompatActivity {
@@ -69,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void registration(View view) {
         Intent intent = new Intent(this, RegistrationActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
@@ -116,10 +116,8 @@ public class LoginActivity extends AppCompatActivity {
                                     UserInfo.getInstance().getUsername()), Toast.LENGTH_LONG).show());
 
                     Intent view = new Intent(activity, RoomListActivity.class);
+                    view.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     activity.startActivity(view);
-                    activity.finish();
-                } else {
-
                 }
             } catch (HttpStatusCodeException e) {
                 activity.runOnUiThread(() -> {
@@ -147,6 +145,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (ResourceAccessException e) {
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, R.string.all_noServer, Toast.LENGTH_LONG).show();
+                });
             }
             return null;
         }

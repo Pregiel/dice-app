@@ -32,6 +32,7 @@
             android:windowSoftInputMode="adjustResize">
 
         </activity>
+        <activity android:name=".activities.RoomActivity" />
     </application>
 
 </manifest>

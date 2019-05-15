@@ -1,4 +1,4 @@
-package pl.pregiel.dice_app;
+package pl.pregiel.dice_app.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;

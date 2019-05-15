@@ -1,4 +1,4 @@
-package pl.pregiel.dice_app;
+package pl.pregiel.dice_app.utils;
 
 
 import android.graphics.drawable.GradientDrawable;
@@ -10,6 +10,8 @@ import android.widget.EditText;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import pl.pregiel.dice_app.R;
 
 public class Utils {
     public static boolean isCollection(Object obj) {

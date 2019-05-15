@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -24,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.pregiel.dice_app.R;
-import pl.pregiel.dice_app.RoomListAdapter;
-import pl.pregiel.dice_app.WebController;
+import pl.pregiel.dice_app.adapters.RoomListAdapter;
+import pl.pregiel.dice_app.web.WebController;
 import pl.pregiel.dice_app.dtos.RoomDto;
 
 public class RoomListActivity extends AppCompatActivity {
@@ -36,6 +37,9 @@ public class RoomListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roomlist);
+
+        Toolbar toolbar = findViewById(R.id.toolbar_roomlist);
+        setSupportActionBar(toolbar);
 
         roomList = new ArrayList<>();
         adapter = new RoomListAdapter(this, roomList);

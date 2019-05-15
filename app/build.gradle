@@ -35,6 +35,10 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+
+    // https://mvnrepository.com/artifact/com.android.support/gridlayout-v7
+    compile group: 'com.android.support', name: 'gridlayout-v7', version: '26.1.0'
+
 }
 repositories {
     maven {

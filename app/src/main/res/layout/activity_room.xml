@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:theme="@style/ToolbarWhiteBackArrow"
+        app:title="Room"
+        app:titleTextColor="@color/colorToolbarTitle" />
+
+    <ListView
+        android:id="@+id/listView_room_rollHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gridLayout_room_rollPanel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/toolbar_room"
+        android:scrollbars="vertical">
+
+    </ListView>
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/gridLayout_room_rollPanel"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        app:columnCount="4"
+        app:rowCount="3">
+
+        <Button
+            android:id="@+id/button_roll_d4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d4"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_d6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d6"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_d8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d8"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_d10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d10"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_d12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d12"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_d20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d20"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_d100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="d100"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Custom"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_roll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Roll"
+            android:textSize="20sp"
+            app:layout_columnSpan="2"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+1"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/button_roll_substract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-1"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+    </android.support.v7.widget.GridLayout>
+
+</RelativeLayout>

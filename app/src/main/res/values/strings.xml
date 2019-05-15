@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Dice-app</string>
+    <string name="all_roomTitle">%1$d. %2$s</string>
     <string name="all_username">Username</string>
     <string name="all_password">Password</string>
     <string name="all_confirmPassword">Confirm password</string>
+    <string name="all_noServer">Could not find a server.</string>
     <string name="login_header">Welcome</string>
     <string name="login_login">Log In</string>
     <string name="login_create">Create Account</string>

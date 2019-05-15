@@ -1,8 +1,8 @@
-package pl.pregiel.dice_app;
+package pl.pregiel.dice_app.web;
 
 
 public enum HttpResultMessage {
-    CredentialsInvalid, RoomNotFound;
+    CredentialsInvalid, RoomNotFound, PasswordNull;
 
     @Override
     public String toString() {
@@ -11,6 +11,8 @@ public enum HttpResultMessage {
                 return "credentials.invalid";
             case RoomNotFound:
                 return "room.notFound";
+            case PasswordNull:
+                return "password.null";
         }
         return "";
     }

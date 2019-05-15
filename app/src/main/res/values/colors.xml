@@ -12,4 +12,5 @@
 
     <color name="colorBorder">#444444</color>
     <color name="colorAlert">#FF4444</color>
+    <color name="colorToolbarTitle">#f5f5f5</color>
 </resources>

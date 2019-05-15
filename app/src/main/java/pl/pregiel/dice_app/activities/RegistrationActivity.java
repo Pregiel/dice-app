@@ -16,23 +16,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import pl.pregiel.dice_app.R;
-import pl.pregiel.dice_app.TextValidator;
+import pl.pregiel.dice_app.utils.TextValidator;
 import pl.pregiel.dice_app.pojos.User;
 import pl.pregiel.dice_app.UserInfo;
-import pl.pregiel.dice_app.Utils;
-import pl.pregiel.dice_app.WebController;
+import pl.pregiel.dice_app.utils.Utils;
+import pl.pregiel.dice_app.web.WebController;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -150,8 +149,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                 UserInfo.getInstance().getUsername()), Toast.LENGTH_LONG).show());
 
                 Intent view = new Intent(activity, RoomListActivity.class);
+                view.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 activity.startActivity(view);
-                activity.finish();
 
             } catch (HttpStatusCodeException e) {
                 if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
@@ -176,6 +175,10 @@ public class RegistrationActivity extends AppCompatActivity {
                 e.printStackTrace();
                 activity.runOnUiThread(() -> {
                     Toast.makeText(activity, R.string.login_errors_unknown, Toast.LENGTH_LONG).show();
+                });
+            } catch (ResourceAccessException e) {
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, R.string.all_noServer, Toast.LENGTH_LONG).show();
                 });
             }
             return null;

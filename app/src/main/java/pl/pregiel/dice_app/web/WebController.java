@@ -1,4 +1,4 @@
-package pl.pregiel.dice_app;
+package pl.pregiel.dice_app.web;
 
 
 import org.springframework.http.HttpEntity;
