@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.microsoft.signalr.Action1;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
+import com.microsoft.signalr.HubConnectionState;
 
 import org.json.JSONObject;
 
@@ -94,9 +95,13 @@ public class RoomHub {
             HubConnection hubConnection = (HubConnection) objects[0];
             int roomId = (int) objects[1];
 
-            hubConnection.stop().blockingAwait();
-            hubConnection.start().blockingAwait();
-            hubConnection.send("JoinRoom", roomId);
+            if (hubConnection != null) {
+                if (hubConnection.getConnectionState() == HubConnectionState.CONNECTED)
+                    hubConnection.stop().blockingAwait();
+
+                hubConnection.start().blockingAwait();
+                hubConnection.send("JoinRoom", roomId);
+            }
             return null;
         }
     }
@@ -112,8 +117,11 @@ public class RoomHub {
             HubConnection hubConnection = (HubConnection) objects[0];
             int roomId = (int) objects[1];
 
-            hubConnection.send("LeaveRoom", roomId);
-            hubConnection.stop().blockingAwait();
+            if (hubConnection != null)
+                if (hubConnection.getConnectionState() == HubConnectionState.CONNECTED) {
+                    hubConnection.send("LeaveRoom", roomId);
+                    hubConnection.stop().blockingAwait();
+                }
             return null;
         }
     }

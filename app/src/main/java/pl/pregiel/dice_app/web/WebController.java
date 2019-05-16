@@ -12,7 +12,8 @@ public class WebController {
             USER_LIST_URL = BASE_URL + "users/",
             AUTHENTICATE_URL = USER_LIST_URL + "authenticate/",
             ROOM_LIST_URL = BASE_URL + "rooms/",
-            ROOM_URL = ROOM_LIST_URL + "%s/";
+            ROOM_URL = ROOM_LIST_URL + "%s/",
+            ROLL_URL = ROOM_URL + "rolls/";
 
     private static HttpEntity<String> httpEntity;
 

@@ -9,6 +9,7 @@ public class RollDto {
     private int userId;
     private String username;
     private int roomId;
+    private int modifier;
     private List<RollValueDto> rollValues;
     private String createdTime;
 
@@ -42,6 +43,14 @@ public class RollDto {
 
     public void setRoomId(int roomId) {
         this.roomId = roomId;
+    }
+
+    public int getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(int modifier) {
+        this.modifier = modifier;
     }
 
     public List<RollValueDto> getRollValues() {

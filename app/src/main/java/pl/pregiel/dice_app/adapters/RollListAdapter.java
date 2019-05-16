@@ -1,43 +1,24 @@
 package pl.pregiel.dice_app.adapters;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import pl.pregiel.dice_app.R;
-import pl.pregiel.dice_app.activities.RoomActivity;
-import pl.pregiel.dice_app.dialogs.PasswordDialogFragment;
 import pl.pregiel.dice_app.dtos.RollDto;
 import pl.pregiel.dice_app.dtos.RollValueDto;
-import pl.pregiel.dice_app.dtos.RoomDto;
-import pl.pregiel.dice_app.web.HttpResultMessage;
-import pl.pregiel.dice_app.web.WebController;
 
 public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable {
     private List<RollDto> rollList;
@@ -72,16 +53,17 @@ public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable
         TextView createdDateText = convertView.findViewById(R.id.textView_room_element_createdDate);
 
         int totalRoll = 0;
-        HashMap<Integer, List<Integer>> rollMap = new HashMap<>();
+        TreeMap<DicePips, List<Integer>> rollMap = new TreeMap<>();
+
         for (RollValueDto rollValue : roll.getRollValues()) {
             totalRoll += rollValue.getValue();
-            List<Integer> values = rollMap.get(rollValue.getMaxValue());
+            List<Integer> values = rollMap.get(new DicePips(rollValue.getMaxValue()));
             if (values == null) {
                 values = new ArrayList<>();
             }
             values.add(rollValue.getValue());
 
-            rollMap.put(rollValue.getMaxValue(), values);
+            rollMap.put(new DicePips(rollValue.getMaxValue()), values);
         }
 
         userRolledText.setText(getContext().getString(R.string.room_element_userRolled, String.valueOf(roll.getUsername())));
@@ -89,8 +71,9 @@ public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable
         totalRollText.setText(String.valueOf(totalRoll));
 
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<Integer, List<Integer>> entry : rollMap.entrySet()) {
-            stringBuilder.append(entry.getValue().size()).append("d").append(entry.getKey())
+        for (Map.Entry<DicePips, List<Integer>> entry : rollMap.entrySet()) {
+            stringBuilder.append(entry.getKey().getValue() < 0 ? " - " : stringBuilder.length() == 0 ? "" : " + ")
+                    .append(entry.getValue().size()).append("d").append(Math.abs(entry.getKey().getValue()))
                     .append(" (");
 
             for (Integer value : entry.getValue()) {
@@ -99,15 +82,38 @@ public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable
             if (stringBuilder.length() > 2)
                 stringBuilder.setLength(stringBuilder.length() - 2);
 
-            stringBuilder.append(") + ");
+            stringBuilder.append(")");
         }
-        if (stringBuilder.length() > 2)
-            stringBuilder.setLength(stringBuilder.length() - 2);
+
+
+        if (roll.getModifier() != 0)
+            stringBuilder.append(roll.getModifier() < 0 ? " - " : " + ")
+                    .append(Math.abs(roll.getModifier()));
 
         rollDescText.setText(stringBuilder.toString());
 
         createdDateText.setText(roll.getCreatedTime());
 
         return convertView;
+    }
+
+    final private class DicePips implements Comparable<DicePips> {
+        private int value;
+
+        public DicePips(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        @Override
+        public int compareTo(@NonNull DicePips o) {
+            if (Math.abs(value) == Math.abs(o.value)){
+                return Integer.compare(o.value, value);
+            }
+            return Integer.compare(Math.abs(o.value), Math.abs(value));
+        }
     }
 }

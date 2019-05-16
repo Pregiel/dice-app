@@ -35,8 +35,20 @@
         android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:focusableInTouchMode="true"
         app:columnCount="4"
-        app:rowCount="3">
+        app:rowCount="4">
+
+        <EditText
+            android:id="@+id/editText_room_rollString"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:ems="10"
+            android:focusedByDefault="false"
+            android:inputType="textPersonName"
+            app:layout_columnSpan="4" />
 
         <Button
             android:id="@+id/button_roll_d4"
