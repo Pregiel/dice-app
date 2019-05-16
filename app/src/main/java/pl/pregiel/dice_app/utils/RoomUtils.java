@@ -52,7 +52,7 @@ public class RoomUtils {
 
     public static RollDto stringToRollDto(String string) {
         string = string.replace(" ", "");
-        if (!string.matches("(([-+])?\\d+(d\\d+)?)?(([-+])\\d+(d\\d+)?)*"))
+        if (!string.matches("(([-+])?\\d+(d\\d+)?)?(([-+])\\d+(d\\d+)?)*") || string.length() == 0)
             throw new InvalidParameterException();
 
         if (!string.matches("[-+]...*"))
@@ -70,7 +70,8 @@ public class RoomUtils {
                 String[] parts = s.split("d");
 
                 int amount = Integer.valueOf(parts[0].substring(1));
-                int sign = parts[0].matches("-...*") ? -1 : 1;
+
+                int sign = parts[0].contains("-") ? -1 : 1;
 
                 for (int i = 0; i < amount; i++) {
                     RollValueDto rollValue = new RollValueDto();

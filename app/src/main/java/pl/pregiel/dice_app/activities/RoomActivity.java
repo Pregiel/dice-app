@@ -2,6 +2,7 @@ package pl.pregiel.dice_app.activities;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -173,7 +175,22 @@ public class RoomActivity extends AppCompatActivity {
             clearRollString();
         });
 
-        rollString = findViewById(R.id.editText_room_rollString);
+        Button customButton = findViewById(R.id.button_roll_custom);
+        customButton.setOnClickListener(v -> {
+            final NumberPicker numberPicker = new NumberPicker(this);
+            numberPicker.setMaxValue(999);
+            numberPicker.setMinValue(1);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(numberPicker);
+            builder.setTitle("Changing the Hue");
+            builder.setMessage("Choose a value :");
+            builder.setPositiveButton("OK", (dialog, which) -> addToRoll(numberPicker.getValue()));
+            builder.setNegativeButton("CANCEL", (dialog, which) -> {});
+            builder.create();
+            builder.show();
+        });
+
         rollString.addTextChangedListener(new TextValidator() {
             @Override
             public void textChanged() {

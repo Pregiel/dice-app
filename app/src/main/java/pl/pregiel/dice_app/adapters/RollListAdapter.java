@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import pl.pregiel.dice_app.R;
+import pl.pregiel.dice_app.UserInfo;
 import pl.pregiel.dice_app.dtos.RollDto;
 import pl.pregiel.dice_app.dtos.RollValueDto;
 import pl.pregiel.dice_app.utils.RoomUtils;
@@ -55,7 +56,8 @@ public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable
             totalRoll += rollValue.getValue();
         }
 
-        userRolledText.setText(getContext().getString(R.string.room_element_userRolled, String.valueOf(roll.getUsername())));
+        userRolledText.setText(getContext().getString(R.string.room_element_userRolled,
+                UserInfo.getInstance().getUsername().equals(roll.getUsername()) ? "You" : roll.getUsername()));
         totalRollText.setText(String.valueOf(totalRoll));
         rollDescText.setText(RoomUtils.rollDtoToString(roll, true));
         createdDateText.setText(roll.getCreatedTime());
