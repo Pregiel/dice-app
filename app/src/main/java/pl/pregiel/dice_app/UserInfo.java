@@ -8,6 +8,7 @@ public class UserInfo {
     private static UserInfo userInfo;
 
     private String username;
+    private String token;
 
 //    private List<RoomDto> roomList = new ArrayList<>();
 
@@ -26,7 +27,15 @@ public class UserInfo {
         this.username = username;
     }
 
-//    public List<RoomDto> getRoomList() {
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    //    public List<RoomDto> getRoomList() {
 //        return roomList;
 //    }
 //

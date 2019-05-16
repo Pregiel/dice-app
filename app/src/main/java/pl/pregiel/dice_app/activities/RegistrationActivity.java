@@ -27,8 +27,8 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import pl.pregiel.dice_app.R;
+import pl.pregiel.dice_app.dtos.UserDto;
 import pl.pregiel.dice_app.utils.TextValidator;
-import pl.pregiel.dice_app.pojos.User;
 import pl.pregiel.dice_app.UserInfo;
 import pl.pregiel.dice_app.utils.Utils;
 import pl.pregiel.dice_app.web.WebController;
@@ -125,13 +125,12 @@ public class RegistrationActivity extends AppCompatActivity {
             final EditText password = activity.findViewById(R.id.editText_registration_password);
             final EditText confirmPassword = activity.findViewById(R.id.editText_registration_confirmPassword);
 
-            User user = new User(username.getText().toString(),
-                    password.getText().toString(),
-                    confirmPassword.getText().toString());
+            UserDto user = new UserDto(username.getText().toString(),
+                    password.getText().toString());
 
             RestTemplate restTemplate = new RestTemplate();
 
-            HttpEntity<User> entity = new HttpEntity<>(user,
+            HttpEntity<UserDto> entity = new HttpEntity<>(user,
                     WebController.getHttpEntityWithoutAuth().getHeaders());
 
             try {

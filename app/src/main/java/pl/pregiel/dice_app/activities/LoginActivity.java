@@ -25,10 +25,10 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.ref.WeakReference;
 
 import pl.pregiel.dice_app.R;
+import pl.pregiel.dice_app.dtos.UserDto;
 import pl.pregiel.dice_app.utils.TextValidator;
 import pl.pregiel.dice_app.UserInfo;
 import pl.pregiel.dice_app.web.WebController;
-import pl.pregiel.dice_app.pojos.User;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText username, password;
@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         username = findViewById(R.id.editText_login_username);
         password = findViewById(R.id.editText_login_password);
@@ -86,8 +85,8 @@ public class LoginActivity extends AppCompatActivity {
             final EditText username = activity.findViewById(R.id.editText_login_username);
             final EditText password = activity.findViewById(R.id.editText_login_password);
 
-            User user = new User(username.getText().toString(),
-                    password.getText().toString(), password.getText().toString());
+            UserDto user = new UserDto(username.getText().toString(),
+                    password.getText().toString());
 
             activity.runOnUiThread(() -> {
                 username.setEnabled(false);
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
             UserInfo.getInstance().setUsername(username.getText().toString());
 
-            HttpEntity<User> entity = new HttpEntity<>(user,
+            HttpEntity<UserDto> entity = new HttpEntity<>(user,
                     WebController.getHttpEntityWithoutAuth().getHeaders());
 
             try {

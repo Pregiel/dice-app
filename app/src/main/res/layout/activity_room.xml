@@ -23,7 +23,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar_room"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll">
 
     </ListView>
 

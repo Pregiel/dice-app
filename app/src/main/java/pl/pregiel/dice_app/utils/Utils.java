@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -30,5 +32,10 @@ public class Utils {
         ((GradientDrawable) editText.getBackground()).setStroke(
                 (color == R.color.colorAlert) ? 3 : 2,
                 ContextCompat.getColor(editText.getContext(), color));
+    }
+
+    public static <T> List<T> stringToArray(String s, Class<T[]> clazz) {
+        T[] arr = new Gson().fromJson(s, clazz);
+        return Arrays.asList(arr); //or return Arrays.asList(new Gson().fromJson(s, clazz)); for a one-liner
     }
 }

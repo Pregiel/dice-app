@@ -5,6 +5,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import pl.pregiel.dice_app.UserInfo;
+
 public class WebController {
     public static final String BASE_URL = "http://192.168.1.20:45455/api/",
             USER_LIST_URL = BASE_URL + "users/",
@@ -21,6 +23,8 @@ public class WebController {
         httpHeaders.set("Authorization", "Bearer " + accessToken);
 
         httpEntity = new HttpEntity<>(httpHeaders);
+
+        UserInfo.getInstance().setToken(accessToken);
     }
 
     public static HttpEntity<String> getHttpEntityWithoutAuth() {

@@ -39,6 +39,10 @@ dependencies {
     // https://mvnrepository.com/artifact/com.android.support/gridlayout-v7
     compile group: 'com.android.support', name: 'gridlayout-v7', version: '26.1.0'
 
+    // https://mvnrepository.com/artifact/com.microsoft.signalr/signalr
+    compile group: 'com.microsoft.signalr', name: 'signalr', version: '1.0.0'
+
+    implementation 'org.slf4j:slf4j-jdk14:1.7.25'
 }
 repositories {
     maven {
