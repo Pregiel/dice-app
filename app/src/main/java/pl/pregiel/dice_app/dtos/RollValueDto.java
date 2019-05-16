@@ -5,6 +5,13 @@ public class RollValueDto {
     private int maxValue;
     private int value;
 
+    public RollValueDto() {
+    }
+
+    public RollValueDto(int maxValue) {
+        this.maxValue = maxValue;
+    }
+
     public int getMaxValue() {
         return maxValue;
     }
@@ -20,4 +27,5 @@ public class RollValueDto {
     public void setValue(int value) {
         this.value = value;
     }
+
 }

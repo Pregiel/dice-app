@@ -1,6 +1,7 @@
 package pl.pregiel.dice_app.dtos;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,10 @@ public class RollDto {
     private int modifier;
     private List<RollValueDto> rollValues;
     private String createdTime;
+
+    public RollDto() {
+        rollValues = new ArrayList<>();
+    }
 
     public int getId() {
         return id;

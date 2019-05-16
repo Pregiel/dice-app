@@ -7,8 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +30,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import pl.pregiel.dice_app.R;
@@ -33,6 +39,7 @@ import pl.pregiel.dice_app.dtos.RollDto;
 import pl.pregiel.dice_app.dtos.RollValueDto;
 import pl.pregiel.dice_app.dtos.RoomDetailsDto;
 import pl.pregiel.dice_app.utils.ParametrizedRunnable;
+import pl.pregiel.dice_app.utils.RoomUtils;
 import pl.pregiel.dice_app.web.RoomHub;
 import pl.pregiel.dice_app.web.WebController;
 
@@ -43,6 +50,10 @@ public class RoomActivity extends AppCompatActivity {
     private RoomDetailsDto room;
 
     private RoomHub roomHub;
+
+    private RollDto roll;
+
+    private int operation = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +73,8 @@ public class RoomActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        roll = new RollDto();
 
         rollList = new ArrayList<>();
         adapter = new RollListAdapter(this, rollList);
@@ -86,9 +99,9 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    List<RollDto> rollDtos = Arrays.asList((RollDto[]) getParameters().get(0));
+                    List<RollDto> rollDtoList = Arrays.asList((RollDto[]) getParameters().get(0));
                     rollList.clear();
-                    rollList.addAll(rollDtos);
+                    rollList.addAll(rollDtoList);
 
                     runOnUiThread(() -> adapter.notifyDataSetChanged());
                 } catch (Exception e) {
@@ -112,38 +125,105 @@ public class RoomActivity extends AppCompatActivity {
         }, RollDto.class);
 
         Button d4Button = findViewById(R.id.button_roll_d4);
-        d4Button.setOnClickListener(v -> {
-            try {
-                roomHub.send("UpdateRollList", room.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        d4Button.setOnClickListener(v -> addToRoll(4));
 
         Button d6Button = findViewById(R.id.button_roll_d6);
-        d6Button.setOnClickListener(v -> {
-            try {
-//                roomHub.send("SendRoom", room.getId(), "D6");
-                rollList.clear();
-                runOnUiThread(() -> adapter.notifyDataSetChanged());
-            } catch (Exception e) {
-                e.printStackTrace();
+        d6Button.setOnClickListener(v -> addToRoll(6));
+
+        Button d8Button = findViewById(R.id.button_roll_d8);
+        d8Button.setOnClickListener(v -> addToRoll(8));
+
+        Button d10Button = findViewById(R.id.button_roll_d10);
+        d10Button.setOnClickListener(v -> addToRoll(10));
+
+        Button d12Button = findViewById(R.id.button_roll_d12);
+        d12Button.setOnClickListener(v -> addToRoll(12));
+
+        Button d20Button = findViewById(R.id.button_roll_d20);
+        d20Button.setOnClickListener(v -> addToRoll(20));
+
+        Button d100Button = findViewById(R.id.button_roll_d100);
+        d100Button.setOnClickListener(v -> addToRoll(100));
+
+        Button modifierButton = findViewById(R.id.button_roll_modifier);
+        modifierButton.setOnClickListener(v -> {
+            EditText rollString = findViewById(R.id.editText_room_rollString);
+            rollString.clearFocus();
+            roll.setModifier(roll.getModifier() + operation);
+            updateRollString();
+        });
+
+        Button operationButton = findViewById(R.id.button_roll_operation);
+        operationButton.setOnClickListener(v -> {
+            if (operation != 1) {
+                operation = 1;
+                operationButton.setText("+");
+                modifierButton.setText("+1");
+            } else {
+                operation = -1;
+                operationButton.setText("-");
+                modifierButton.setText("-1");
             }
         });
 
-        Button d8Button = findViewById(R.id.button_roll_d8);
-        d8Button.setOnClickListener(v -> {
-            try {
-                roomHub.send("SendRoom", room.getId(), "D8");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        Button clearButton = findViewById(R.id.button_roll_clear);
+        clearButton.setOnClickListener(v -> {
+            clearRoll();
+            clearRollString();
         });
 
         Button rollButton = findViewById(R.id.button_roll_roll);
         rollButton.setOnClickListener(v -> {
-//            new NewRollTask(this).execute(room.getId(), );
+            new NewRollTask(this).execute(room.getId(), roll);
+            clearRoll();
+            clearRollString();
         });
+
+
+        EditText rollString = findViewById(R.id.editText_room_rollString);
+        rollString.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0) {
+                    clearButton.setVisibility(View.VISIBLE);
+                } else {
+                    clearButton.setVisibility(View.GONE);
+                }
+                if (getCurrentFocus() == rollString) {
+                    System.out.println("asdad");
+                } else {
+                    System.out.println("NIMA");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void addToRoll(int dicePips) {
+        roll.getRollValues().add(new RollValueDto(operation * dicePips));
+        updateRollString();
+    }
+
+    private void updateRollString() {
+        EditText rollString = findViewById(R.id.editText_room_rollString);
+        rollString.clearFocus();
+        rollString.setText(RoomUtils.RollDtoToString(roll, false));
+    }
+
+    private void clearRollString() {
+        EditText rollString = findViewById(R.id.editText_room_rollString);
+        rollString.setText("");
+    }
+
+    private void clearRoll() {
+        roll = new RollDto();
     }
 
     @Override
@@ -170,18 +250,19 @@ public class RoomActivity extends AppCompatActivity {
             final Activity activity = reference.get();
 
             int roomId = (int) objects[0];
-            List<RollValueDto> rollValueList = (List<RollValueDto>) objects[1];
+            RollDto roll = (RollDto) objects[1];
 
             RestTemplate restTemplate = new RestTemplate();
 
             try {
-                HttpEntity<List<RollValueDto>> entity = new HttpEntity<>(rollValueList,
+                HttpEntity<RollDto> entity = new HttpEntity<>(roll,
                         WebController.getHttpEntity().getHeaders());
 
                 ResponseEntity<RollDto> response = restTemplate.exchange(
                         String.format(WebController.ROLL_URL, roomId), HttpMethod.POST,
                         entity, RollDto.class);
 
+                System.out.println(response);
             } catch (HttpStatusCodeException e) {
                 if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                     activity.runOnUiThread(() -> {

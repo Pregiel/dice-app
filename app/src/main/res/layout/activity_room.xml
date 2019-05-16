@@ -39,16 +39,34 @@
         app:columnCount="4"
         app:rowCount="4">
 
-        <EditText
-            android:id="@+id/editText_room_rollString"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginStart="12dp"
-            android:ems="10"
-            android:focusedByDefault="false"
-            android:inputType="textPersonName"
-            app:layout_columnSpan="4" />
+            app:layout_columnSpan="4">
+
+            <EditText
+                android:id="@+id/editText_room_rollString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:paddingRight="30dp"
+                android:singleLine="true"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/button_roll_clear"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/ic_clear_black"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/button_roll_d4"
@@ -132,7 +150,7 @@
             app:layout_rowWeight="1" />
 
         <Button
-            android:id="@+id/button_roll_add"
+            android:id="@+id/button_roll_modifier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+1"
@@ -141,10 +159,10 @@
             app:layout_rowWeight="1" />
 
         <Button
-            android:id="@+id/button_roll_substract"
+            android:id="@+id/button_roll_operation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-1"
+            android:text="+"
             android:textSize="20sp"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1" />

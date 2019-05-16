@@ -19,6 +19,8 @@ import java.util.TreeMap;
 import pl.pregiel.dice_app.R;
 import pl.pregiel.dice_app.dtos.RollDto;
 import pl.pregiel.dice_app.dtos.RollValueDto;
+import pl.pregiel.dice_app.utils.DicePips;
+import pl.pregiel.dice_app.utils.RoomUtils;
 
 public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable {
     private List<RollDto> rollList;
@@ -53,67 +55,15 @@ public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable
         TextView createdDateText = convertView.findViewById(R.id.textView_room_element_createdDate);
 
         int totalRoll = 0;
-        TreeMap<DicePips, List<Integer>> rollMap = new TreeMap<>();
-
         for (RollValueDto rollValue : roll.getRollValues()) {
             totalRoll += rollValue.getValue();
-            List<Integer> values = rollMap.get(new DicePips(rollValue.getMaxValue()));
-            if (values == null) {
-                values = new ArrayList<>();
-            }
-            values.add(rollValue.getValue());
-
-            rollMap.put(new DicePips(rollValue.getMaxValue()), values);
         }
 
         userRolledText.setText(getContext().getString(R.string.room_element_userRolled, String.valueOf(roll.getUsername())));
-
         totalRollText.setText(String.valueOf(totalRoll));
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<DicePips, List<Integer>> entry : rollMap.entrySet()) {
-            stringBuilder.append(entry.getKey().getValue() < 0 ? " - " : stringBuilder.length() == 0 ? "" : " + ")
-                    .append(entry.getValue().size()).append("d").append(Math.abs(entry.getKey().getValue()))
-                    .append(" (");
-
-            for (Integer value : entry.getValue()) {
-                stringBuilder.append(value).append(", ");
-            }
-            if (stringBuilder.length() > 2)
-                stringBuilder.setLength(stringBuilder.length() - 2);
-
-            stringBuilder.append(")");
-        }
-
-
-        if (roll.getModifier() != 0)
-            stringBuilder.append(roll.getModifier() < 0 ? " - " : " + ")
-                    .append(Math.abs(roll.getModifier()));
-
-        rollDescText.setText(stringBuilder.toString());
-
+        rollDescText.setText(RoomUtils.RollDtoToString(roll, true));
         createdDateText.setText(roll.getCreatedTime());
 
         return convertView;
-    }
-
-    final private class DicePips implements Comparable<DicePips> {
-        private int value;
-
-        public DicePips(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        @Override
-        public int compareTo(@NonNull DicePips o) {
-            if (Math.abs(value) == Math.abs(o.value)){
-                return Integer.compare(o.value, value);
-            }
-            return Integer.compare(Math.abs(o.value), Math.abs(value));
-        }
     }
 }
