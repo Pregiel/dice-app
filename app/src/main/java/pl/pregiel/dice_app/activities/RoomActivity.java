@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +27,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import pl.pregiel.dice_app.R;
@@ -38,8 +37,10 @@ import pl.pregiel.dice_app.adapters.RollListAdapter;
 import pl.pregiel.dice_app.dtos.RollDto;
 import pl.pregiel.dice_app.dtos.RollValueDto;
 import pl.pregiel.dice_app.dtos.RoomDetailsDto;
+import pl.pregiel.dice_app.dtos.RoomDto;
 import pl.pregiel.dice_app.utils.ParametrizedRunnable;
 import pl.pregiel.dice_app.utils.RoomUtils;
+import pl.pregiel.dice_app.utils.TextValidator;
 import pl.pregiel.dice_app.web.RoomHub;
 import pl.pregiel.dice_app.web.WebController;
 
@@ -48,11 +49,10 @@ public class RoomActivity extends AppCompatActivity {
     private RollListAdapter adapter;
 
     private RoomDetailsDto room;
-
     private RoomHub roomHub;
-
     private RollDto roll;
 
+    private EditText rollString;
     private int operation = 1;
 
     @Override
@@ -81,6 +81,8 @@ public class RoomActivity extends AppCompatActivity {
 
         ListView rollListView = findViewById(R.id.listView_room_rollHistory);
         rollListView.setAdapter(adapter);
+
+        rollString = findViewById(R.id.editText_room_rollString);
 
         roomHub = new RoomHub(this);
         roomHub.joinRoom(room.getId());
@@ -147,8 +149,7 @@ public class RoomActivity extends AppCompatActivity {
 
         Button modifierButton = findViewById(R.id.button_roll_modifier);
         modifierButton.setOnClickListener(v -> {
-            EditText rollString = findViewById(R.id.editText_room_rollString);
-            rollString.clearFocus();
+            roll = RoomUtils.stringToRollDto(rollString.getText().toString());
             roll.setModifier(roll.getModifier() + operation);
             updateRollString();
         });
@@ -172,53 +173,44 @@ public class RoomActivity extends AppCompatActivity {
             clearRollString();
         });
 
-        Button rollButton = findViewById(R.id.button_roll_roll);
-        rollButton.setOnClickListener(v -> {
-            new NewRollTask(this).execute(room.getId(), roll);
-            clearRoll();
-            clearRollString();
-        });
-
-
-        EditText rollString = findViewById(R.id.editText_room_rollString);
-        rollString.addTextChangedListener(new TextWatcher() {
+        rollString = findViewById(R.id.editText_room_rollString);
+        rollString.addTextChangedListener(new TextValidator() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count > 0) {
+            public void textChanged() {
+                if (rollString.getText().length() > 0) {
                     clearButton.setVisibility(View.VISIBLE);
                 } else {
                     clearButton.setVisibility(View.GONE);
                 }
-                if (getCurrentFocus() == rollString) {
-                    System.out.println("asdad");
-                } else {
-                    System.out.println("NIMA");
-                }
             }
+        });
 
-            @Override
-            public void afterTextChanged(Editable s) {
+        Button rollButton = findViewById(R.id.button_roll_roll);
+        rollButton.setOnClickListener(v -> {
+            try {
+                roll = RoomUtils.stringToRollDto(rollString.getText().toString());
 
+                new NewRollTask(this).execute(room.getId(), roll);
+                clearRoll();
+                clearRollString();
+            } catch (InvalidParameterException e) {
+                runOnUiThread(() -> Toast.makeText(this, R.string.room_errors_invalidRollString, Toast.LENGTH_SHORT).show());
             }
         });
     }
 
     private void addToRoll(int dicePips) {
+        roll = RoomUtils.stringToRollDto(rollString.getText().toString());
         roll.getRollValues().add(new RollValueDto(operation * dicePips));
         updateRollString();
     }
 
     private void updateRollString() {
-        EditText rollString = findViewById(R.id.editText_room_rollString);
         rollString.clearFocus();
-        rollString.setText(RoomUtils.RollDtoToString(roll, false));
+        rollString.setText(RoomUtils.rollDtoToString(roll, false));
     }
 
     private void clearRollString() {
-        EditText rollString = findViewById(R.id.editText_room_rollString);
         rollString.setText("");
     }
 

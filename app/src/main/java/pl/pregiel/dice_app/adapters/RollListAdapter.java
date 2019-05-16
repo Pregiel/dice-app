@@ -11,15 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import pl.pregiel.dice_app.R;
 import pl.pregiel.dice_app.dtos.RollDto;
 import pl.pregiel.dice_app.dtos.RollValueDto;
-import pl.pregiel.dice_app.utils.DicePips;
 import pl.pregiel.dice_app.utils.RoomUtils;
 
 public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable {
@@ -54,14 +50,14 @@ public class RollListAdapter extends ArrayAdapter<RollDto> implements Filterable
         TextView rollDescText = convertView.findViewById(R.id.textView_room_element_rollDesc);
         TextView createdDateText = convertView.findViewById(R.id.textView_room_element_createdDate);
 
-        int totalRoll = 0;
+        int totalRoll = roll.getModifier();
         for (RollValueDto rollValue : roll.getRollValues()) {
             totalRoll += rollValue.getValue();
         }
 
         userRolledText.setText(getContext().getString(R.string.room_element_userRolled, String.valueOf(roll.getUsername())));
         totalRollText.setText(String.valueOf(totalRoll));
-        rollDescText.setText(RoomUtils.RollDtoToString(roll, true));
+        rollDescText.setText(RoomUtils.rollDtoToString(roll, true));
         createdDateText.setText(roll.getCreatedTime());
 
         return convertView;

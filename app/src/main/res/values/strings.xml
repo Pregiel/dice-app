@@ -25,6 +25,7 @@
     <string name="roomList_info_refreshed">Refreshed!</string>
     <string name="room_element_userRolled">%s rolled</string>
     <string name="room_errors_invalidPassword">Invalid password.</string>
+    <string name="room_errors_invalidRollString">Invalid roll string.</string>
     <string name="room_errors_notFound">Room not found.</string>
     <string name="room_errors_unknown">An unknown error occurred.</string>
     <string name="ok">OK</string>

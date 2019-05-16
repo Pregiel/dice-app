@@ -2,6 +2,9 @@ package pl.pregiel.dice_app;
 
 import org.junit.Test;
 
+import pl.pregiel.dice_app.dtos.RollDto;
+import pl.pregiel.dice_app.utils.RoomUtils;
+
 import static org.junit.Assert.*;
 
 /**
